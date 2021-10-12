@@ -7,16 +7,15 @@ public class Formigueiro {
     private int estoqueMax = 10;
     private Matriz matriz;
     public int i = 2;
-    public int j = 1;
+    public int j = 3;
 
     public Formigueiro(Matriz matriz) {
         this.matriz = matriz;
+        matriz.matriz[i][j] = matriz.formigueiro;
     }
 
-    public List<Integer> center() {
-
-        matriz.matriz[i][j] = matriz.formigueiro;
-        return List.of(i,j);
+    public void center(){
+        matriz.matriz[i][j]=matriz.formigueiro;
     }
 
 }

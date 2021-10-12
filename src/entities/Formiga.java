@@ -2,16 +2,47 @@ package entities;
 
 public class Formiga {
     public int nome;
-    int colunaAtual = 0;
-    int linhaAtual = 0;
+    public int colunaAtual = 0;
+    public int linhaAtual = 0;
+    public Matriz matriz;
 
-    public void caminhar(int i, int j, Formigueiro formigueiro, Matriz matriz) {
-        int linha = formigueiro.i - i;
-        int coluna = formigueiro.j - j;
+    public Formiga(Matriz matriz) {
+        this.matriz = matriz;
+    }
+
+    public void caminhar(int caminhoX, int caminhoY, Formigueiro formigueiro) {
+        colunaAtual = formigueiro.j;
+        linhaAtual = formigueiro.i;
+        System.out.println(sobe(linhaAtual,colunaAtual));
+        System.out.println(desce(linhaAtual,colunaAtual));
+    }
+
+    public boolean sobe(int caminhoX, int caminhoY) {
+        if (caminhoX - 1 >= 0) {
+            if (matriz.verifyCell(caminhoX - 1, caminhoY)) {
+                linhaAtual = caminhoX-1;
+                matriz.matriz[linhaAtual][caminhoY]=matriz.caminho;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean desce(int caminhoX, int caminhoY) {
+        if (caminhoX + 1 < matriz.getLinhas()) {
+            if (matriz.verifyCell(caminhoX + 1, caminhoY)) {
+                linhaAtual = caminhoX+1;
+                matriz.matriz[linhaAtual][caminhoY]=matriz.caminho;
+                return true;
+            }
+        }
+        return false;
+    }
+}
 
 
 //caminha para a direita
-        for (int x = formigueiro.i; x < matriz.getLinhas(); x++) {
+/*        for (int x = formigueiro.i; x < matriz.getLinhas(); x++) {
             boolean caminhouLinha = false;
             for (int y = formigueiro.j; y < j; y++) {
                 if (matriz.matriz[x][y] == 1) {
@@ -43,9 +74,8 @@ public class Formiga {
                 return;
             }
         }
-    }
+    }*/
 
-}
 
 /*
 

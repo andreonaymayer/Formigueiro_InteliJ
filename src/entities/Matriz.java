@@ -1,7 +1,9 @@
 package entities;
 
 public class Matriz {
-    public int matriz[][] = new int[15][20];
+    private int linhas = 5;
+    private int colunas = 7;
+    public int matriz[][] = new int[linhas][colunas];
     public int vazio = 1;
     public int formigueiro = 2;
     public int reservatorio = 3;
@@ -16,13 +18,10 @@ public class Matriz {
     public int formigaTransportadoraEAlimento = 12;
     public int formigaCortadoraEAlimento = 13;
     public int alimento = 14;
-    private int linhas = 5;
-    private int colunas = 6;
-
 
     public Matriz() {
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 20; j++) {
+        for (int i = 0; i < linhas; i++) {
+            for (int j = 0; j < colunas; j++) {
                 this.matriz[i][j] = vazio;
             }
         }

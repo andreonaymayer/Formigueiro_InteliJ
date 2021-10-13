@@ -2,36 +2,46 @@ package entities;
 
 public class Formiga {
     public int nome;
+    public Formigueiro formigueiro;
     public int colunaAtual = 0;
     public int linhaAtual = 0;
+    public int colunaAnterior;
+    public int linhaAnterior;
     public Matriz matriz;
 
-    public Formiga(Matriz matriz) {
-        this.matriz = matriz;
-    }
 
-    public void caminhar(int enderecoX, int enderecoY, Formigueiro formigueiro) {
+    public Formiga(Matriz matriz, Formigueiro formigueiro) {
+        this.matriz = matriz;
+        this.formigueiro = formigueiro;
         this.colunaAtual = formigueiro.j;
         this.linhaAtual = formigueiro.i;
-        enderecoX = 0;
-        enderecoY = 0;
+        this.colunaAnterior = formigueiro.j;
+        this.linhaAnterior = formigueiro.i;
+    }
+
+    public void irReservatorio(ReservatorioAlimento reservatorioAlimento) {
+        //for (int i=0; i < reservatorioAlimento.quantidadeNoMapa; i++) {
+        int i = 0;
+        caminhar(reservatorioAlimento.locals[i][0], reservatorioAlimento.locals[i][1], matriz.formigaRastreadora);
+        i = 1;
+        caminhar(reservatorioAlimento.locals[i][0], reservatorioAlimento.locals[i][1], matriz.formigaRastreadora);
+    }
+
+    public void caminhar(int enderecoX, int enderecoY, int qualFormiga) {
         int fim = 0;
         boolean subiuOuDesceu = false;
+        int counter = 0;
 
-
-        //direita(linhaAtual,colunaAtual);
         while (fim == 0) {
-            System.out.println("Atual (" + linhaAtual + "," + colunaAtual + ") | Destino (" + enderecoX + "," + enderecoY + ")");
+            System.out.println("Counter: " + counter + " | Atual (" + linhaAtual + "," + colunaAtual + ") | Destino (" + enderecoX + "," + enderecoY + ")" + " | Anterior (" + linhaAnterior + "," + colunaAnterior + ")");
             if (!subiuOuDesceu) {
-                System.out.println("Subiu desceu falso");
                 if (precisaSubir(enderecoX)) {
-                    System.out.println("Subiu");
-                    sobe(linhaAtual, colunaAtual);
+                    sobe(linhaAtual, colunaAtual, qualFormiga);
+                    rastro();
                 } else {
-                    System.out.println("nao Subiu ");
                     if (precisaDescer(enderecoX)) {
-                        System.out.println("desceu");
-                        desce(linhaAtual, colunaAtual);
+                        desce(linhaAtual, colunaAtual, qualFormiga);
+                        rastro();
                     } else {
                         subiuOuDesceu = true;
                         System.out.println("terminou de descer ou subir");
@@ -40,29 +50,44 @@ public class Formiga {
             }
             if (subiuOuDesceu) {
                 if (precisaDireita(enderecoY)) {
-                    direita(linhaAtual, colunaAtual);
-                    System.out.println("Foi para a direita");
-
+                    direita(linhaAtual, colunaAtual, qualFormiga);
+                    rastro();
                 } else {
                     if (precisaEsquerda(enderecoY)) {
-                        System.out.println("Foi para a esquerda");
-                        esquerda(linhaAtual, colunaAtual);
-                    } else
-                        fim = chegouNoDestino();
+                        esquerda(linhaAtual, colunaAtual, qualFormiga);
+                        rastro();
+                    } else {
+                        fim = chegouNoDestino(qualFormiga, enderecoY);
+                    }
                 }
             }
+            System.out.println(matriz.imprimeMatriz());
+            counter++;
         }
-        System.out.println(matriz.imprimeMatriz());
     }
 
-    public int chegouNoDestino(){
+    public int chegouNoDestino(int qualFormiga, int destinoY) {
+        if ((colunaAtual == destinoY) & (colunaAnterior - 1 >= 0)) {
+            this.colunaAnterior--;
+            rastro();
+        }
+        if ((colunaAtual == destinoY) & (colunaAnterior + 1 < matriz.getColunas())) {
+            this.colunaAnterior++;
+            rastro();
+            this.colunaAnterior++;
+            rastro();
+        }
+        formigaReservatorio(qualFormiga);
         return 1;
     }
 
-    public boolean atual(int destinoX, int destinoY) {
-        boolean x = destinoX == this.linhaAtual;
-        boolean y = destinoY == this.colunaAtual;
-        return x & y;
+    public void formigaReservatorio(int qualFormiga) {
+        if (qualFormiga == matriz.formigaRastreadora) {
+            matriz.matriz[linhaAtual][colunaAtual] = matriz.formigaRastreadoraEReservatorio;
+        }
+        if (qualFormiga == matriz.formigaCortadora) {
+            matriz.matriz[linhaAtual][colunaAtual] = matriz.formigaRastreadoraECortadoraEReservatorio;
+        }
     }
 
     public boolean precisaSubir(int destinoX) {
@@ -81,11 +106,13 @@ public class Formiga {
         return colunaAtual > destinoY;
     }
 
-    public int sobe(int linhaAtual, int colunaAtual) {
+    public int sobe(int linhaAtual, int colunaAtual, int qualFormiga) {
         if (linhaAtual - 1 >= 0) {
             if (matriz.verifyCell(linhaAtual - 1, colunaAtual)) {
+                this.linhaAnterior = linhaAtual;
+                this.colunaAnterior = colunaAtual;
                 this.linhaAtual = linhaAtual - 1;
-                matriz.matriz[this.linhaAtual][colunaAtual] = matriz.caminho;
+                matriz.matriz[this.linhaAtual][colunaAtual] = qualFormiga;
                 return -1; // subiu
             }
             return matriz.verifyState(linhaAtual - 1, colunaAtual);
@@ -93,11 +120,16 @@ public class Formiga {
         return 0; //não fez nada
     }
 
-    public int desce(int linhaAtual, int colunaAtual) { //é o endereço atual como parametro
+    public int desce(int linhaAtual, int colunaAtual, int qualFormiga) { //é o endereço atual como parametro
         if (linhaAtual + 1 < matriz.getLinhas()) {
             if (matriz.verifyCell(linhaAtual + 1, colunaAtual)) {
+                this.linhaAnterior = linhaAtual;
+                this.colunaAnterior = colunaAtual;
                 this.linhaAtual = linhaAtual + 1;
-                matriz.matriz[this.linhaAtual][colunaAtual] = matriz.caminho;
+                if (matriz.verifyState(linhaAnterior, colunaAtual) != matriz.formigueiro) { // colocar os outros tipos que n podem ser sobrepostos
+                    matriz.matriz[linhaAnterior][colunaAnterior] = matriz.caminho;
+                }
+                matriz.matriz[this.linhaAtual][colunaAtual] = qualFormiga;
                 return -1; //desceu
             }
             return matriz.verifyState(linhaAtual + 1, colunaAtual);
@@ -105,11 +137,16 @@ public class Formiga {
         return 0; //nao fez nada
     }
 
-    public int direita(int linhaAtual, int colunaAtual) {
+    public int direita(int linhaAtual, int colunaAtual, int qualFormiga) {
         if (colunaAtual + 1 < matriz.getColunas()) {
             if (matriz.verifyCell(linhaAtual, colunaAtual + 1)) {
+                this.linhaAnterior = linhaAtual;
+                this.colunaAnterior = colunaAtual;
                 this.colunaAtual = colunaAtual + 1;
-                matriz.matriz[linhaAtual][this.colunaAtual] = matriz.caminho;
+                if (matriz.verifyState(linhaAnterior, colunaAnterior) == qualFormiga) { // colocar os outros tipos que n podem ser sobrepostos
+                    matriz.matriz[linhaAnterior][colunaAnterior] = matriz.caminho;
+                }
+                matriz.matriz[linhaAtual][this.colunaAtual] = qualFormiga;
                 return -1;
             }
             this.colunaAtual = colunaAtual + 1;
@@ -118,11 +155,26 @@ public class Formiga {
         return 0;
     }
 
-    public int esquerda(int linhaAtual, int colunaAtual) {
+    public void rastro() {
+        boolean naoOcupaOFormigueiro = !(formigueiro.i == this.linhaAnterior) & !(formigueiro.j == this.linhaAnterior);
+        boolean naoOcupaOformigaRastreadoraEReservatorio = false;
+        if(matriz.matriz[this.linhaAnterior][this.colunaAnterior]!=matriz.formigaRastreadoraEReservatorio){
+            naoOcupaOformigaRastreadoraEReservatorio = true;
+        }
+
+        if (naoOcupaOFormigueiro | naoOcupaOformigaRastreadoraEReservatorio) {
+                matriz.matriz[this.linhaAnterior][this.colunaAnterior] = matriz.caminho;
+        }
+    }
+
+
+    public int esquerda(int linhaAtual, int colunaAtual, int qualFormiga) {
         if (colunaAtual - 1 >= 0) {
             if (matriz.verifyCell(linhaAtual, colunaAtual - 1)) {
+                this.linhaAnterior = linhaAtual;
+                this.colunaAnterior = colunaAtual;
                 this.colunaAtual = colunaAtual - 1;
-                matriz.matriz[linhaAtual][this.colunaAtual] = matriz.caminho;
+                matriz.matriz[linhaAtual][this.colunaAtual] = qualFormiga;
                 return -1;
             }
             this.colunaAtual = colunaAtual - 1;
@@ -141,6 +193,3 @@ public class Formiga {
 4|        |        |        |        |        |        |
 
 */
-
-
-

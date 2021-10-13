@@ -1,8 +1,8 @@
 package entities;
 
 public class Matriz {
-    private int linhas = 5;
-    private int colunas = 7;
+    private int linhas = 7;
+    private int colunas = 15;
     public int matriz[][] = new int[linhas][colunas];
     public int vazio = 1;
     public int formigueiro = 2;
@@ -17,7 +17,7 @@ public class Matriz {
     public int formigaRastreadoraECortadoraEReservatorio = 11;
     public int formigaTransportadoraEAlimento = 12;
     public int formigaCortadoraEAlimento = 13;
-    public int alimento = 14;
+    public int reservatorioSemEstoque = 14;
 
     public Matriz() {
         for (int i = 0; i < linhas; i++) {
@@ -51,7 +51,7 @@ public class Matriz {
 
     public String imprimeMatriz() {
         String legenda = "R = Reservatorio | - = Obstaculo | F = Formigueiro | # = Caminho " +
-                "| Y = Formiga Rastreadora | W = Formiga Cortadora | T = Formiga transportadora | A = Alimento" + "\n";
+                "| Y = Formiga Rastreadora | W = Formiga Cortadora | \nT = Formiga transportadora | A = Alimento | R V = Reservatorio sem estoque\n";
         String textReturn = "";
         for (int i = 0; i < linhas; i++) {
             textReturn += "|";
@@ -95,6 +95,9 @@ public class Matriz {
                         break;
                     case 13: //Formiga cortadora e alimento
                         textReturn += "   W A  ";
+                        break;
+                    case 14: //Formiga cortadora e alimento
+                        textReturn += "  R V   ";
                         break;
                 }
                 textReturn += "|";

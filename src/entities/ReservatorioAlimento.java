@@ -37,25 +37,10 @@ public class ReservatorioAlimento {
         locals[0][0] = 0;
         locals[0][1] = 0;
         locals[0][2] = estoqueReservatorio;
-        matriz.defineCell(4, 6, name);
+        matriz.defineCell(4, 9, name);
         locals[1][0] = 4;
-        locals[1][1] = 6;
+        locals[1][1] = 9;
         locals[1][2] = estoqueReservatorio;
     }
 }
 
-/*    public ArrayList acessoLocal(int i, int j) {
-        ArrayList retorno = new ArrayList();
-        for (int x = 0; x < locals.size(); x++) {
-            for (int i1 = 0; i1 < matriz.getLinhas(); i1++) {
-                for (int j1 = 0; j1 < matriz.getLinhas(); j1++) {
-                    if (i == i1 & j == j1) {
-                        retorno.add(i1);
-                        retorno.add(j1);
-                    }
-                }
-            }
-        }
-        return retorno;
-    }
-}*/

@@ -33,7 +33,7 @@ public class Formiga {
         int counter = 0;
 
         while (fim == 0) {
-            System.out.println("Counter: " + counter + " | Atual (" + linhaAtual + "," + colunaAtual + ") | Destino (" + enderecoX + "," + enderecoY + ")" + " | Anterior (" + linhaAnterior + "," + colunaAnterior + ")");
+            System.out.println("Counter: "+counter+" | Atual (" + linhaAtual + "," + colunaAtual + ") | Destino (" + enderecoX + "," + enderecoY + ")"+" | Anterior (" + linhaAnterior + "," + colunaAnterior + ")");
             if (!subiuOuDesceu) {
                 if (precisaSubir(enderecoX)) {
                     sobe(linhaAtual, colunaAtual, qualFormiga);
@@ -50,14 +50,14 @@ public class Formiga {
             }
             if (subiuOuDesceu) {
                 if (precisaDireita(enderecoY)) {
-                    direita(linhaAtual, colunaAtual, qualFormiga);
+                    direita(linhaAtual, colunaAtual,qualFormiga);
                     rastro();
                 } else {
                     if (precisaEsquerda(enderecoY)) {
                         esquerda(linhaAtual, colunaAtual, qualFormiga);
                         rastro();
-                    } else {
-                        fim = chegouNoDestino(qualFormiga, enderecoY);
+                    } else{
+                        fim = chegouNoDestino(qualFormiga,enderecoY);
                     }
                 }
             }
@@ -66,18 +66,20 @@ public class Formiga {
         }
     }
 
-    public int chegouNoDestino(int qualFormiga, int destinoY) {
-        if ((colunaAtual == destinoY) & (colunaAnterior - 1 >= 0)) {
+    public int chegouNoDestino(int qualFormiga,int destinoY) {
+        if((colunaAtual == destinoY)&(colunaAnterior - 1 >=0)){
             this.colunaAnterior--;
             rastro();
         }
-        if ((colunaAtual == destinoY) & (colunaAnterior + 1 < matriz.getColunas())) {
+        if((colunaAtual == destinoY)&(colunaAnterior + 1 < matriz.getColunas())){
             this.colunaAnterior++;
             rastro();
             this.colunaAnterior++;
             rastro();
         }
         formigaReservatorio(qualFormiga);
+        colunaAtual = formigueiro.j;
+        linhaAtual = formigueiro.i;
         return 1;
     }
 
@@ -126,7 +128,7 @@ public class Formiga {
                 this.linhaAnterior = linhaAtual;
                 this.colunaAnterior = colunaAtual;
                 this.linhaAtual = linhaAtual + 1;
-                if (matriz.verifyState(linhaAnterior, colunaAtual) != matriz.formigueiro) { // colocar os outros tipos que n podem ser sobrepostos
+                if(matriz.verifyState(linhaAnterior,colunaAtual)!=matriz.formigueiro){ // colocar os outros tipos que n podem ser sobrepostos
                     matriz.matriz[linhaAnterior][colunaAnterior] = matriz.caminho;
                 }
                 matriz.matriz[this.linhaAtual][colunaAtual] = qualFormiga;
@@ -143,7 +145,7 @@ public class Formiga {
                 this.linhaAnterior = linhaAtual;
                 this.colunaAnterior = colunaAtual;
                 this.colunaAtual = colunaAtual + 1;
-                if (matriz.verifyState(linhaAnterior, colunaAnterior) == qualFormiga) { // colocar os outros tipos que n podem ser sobrepostos
+                if(matriz.verifyState(linhaAnterior,colunaAnterior)==qualFormiga){ // colocar os outros tipos que n podem ser sobrepostos
                     matriz.matriz[linhaAnterior][colunaAnterior] = matriz.caminho;
                 }
                 matriz.matriz[linhaAtual][this.colunaAtual] = qualFormiga;
@@ -157,15 +159,11 @@ public class Formiga {
 
     public void rastro() {
         boolean naoOcupaOFormigueiro = !(formigueiro.i == this.linhaAnterior) & !(formigueiro.j == this.linhaAnterior);
-        boolean naoOcupaOformigaRastreadoraEReservatorio = false;
-        if(matriz.matriz[this.linhaAnterior][this.colunaAnterior]!=matriz.formigaRastreadoraEReservatorio){
-            naoOcupaOformigaRastreadoraEReservatorio = true;
-        }
-
-        if (naoOcupaOFormigueiro | naoOcupaOformigaRastreadoraEReservatorio) {
-                matriz.matriz[this.linhaAnterior][this.colunaAnterior] = matriz.caminho;
+        if (naoOcupaOFormigueiro) {
+            matriz.matriz[this.linhaAnterior][this.colunaAnterior] = matriz.caminho;
         }
     }
+
 
 
     public int esquerda(int linhaAtual, int colunaAtual, int qualFormiga) {

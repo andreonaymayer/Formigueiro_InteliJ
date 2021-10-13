@@ -34,6 +34,10 @@ public class Matriz {
             return false;
     }
 
+    public int verifyState(int i, int j){
+        return matriz[i][j];
+    }
+
     public boolean temObstaculo(int i, int j) {
         if (matriz[i][j] == obstaculo) {
             return true;
@@ -57,7 +61,7 @@ public class Matriz {
                         textReturn += "        ";
                         break;
                     case 2: //formigueiro
-                        textReturn += "F       ";
+                        textReturn += "   F    ";
                         break;
                     case 3: //reservatorio
                         textReturn += " R      ";

@@ -17,7 +17,6 @@ public class Main {
         System.out.println(matriz.imprimeMatriz());
         System.out.println("________________________________________________________- fim");
         formiga.caminhar(0,5,formigueiro);
-        System.out.println(matriz.imprimeMatriz());
         System.out.println("________________________________________________________- fim");
 
     }
